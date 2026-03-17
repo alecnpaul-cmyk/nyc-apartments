@@ -5,9 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>NYC Apartments — Last 3 Days</title>
 
-  <!-- Mapbox GL JS -->
-  <link href="https://api.mapbox.com/mapbox-gl-js/v3.1.2/mapbox-gl.css" rel="stylesheet">
-  <script src="https://api.mapbox.com/mapbox-gl-js/v3.1.2/mapbox-gl.js"></script>
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <!-- Leaflet MarkerCluster CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
 
   <link rel="stylesheet" href="style.css">
 </head>
@@ -22,44 +24,41 @@
           <h1>NYC Rentals</h1>
           <p id="subtitle">New listings from the last 3 days</p>
         </div>
-        <div id="zillow-badge">
+        <div id="source-badge">
           <span>via</span>
-          <strong>Zillow</strong>
+          <strong>Craigslist</strong>
         </div>
       </div>
 
       <div id="stats-bar">
-        <div class="stat" id="stat-count">
+        <div class="stat">
           <span class="stat-value" id="count-value">—</span>
           <span class="stat-label">listings</span>
         </div>
         <div class="stat-divider"></div>
         <div class="stat">
           <span class="stat-value" id="today-value">—</span>
-          <span class="stat-label">listed today</span>
+          <span class="stat-label">today</span>
         </div>
         <div class="stat-divider"></div>
         <div class="stat">
           <span class="stat-value" id="median-value">—</span>
-          <span class="stat-label">median price</span>
+          <span class="stat-label">median</span>
         </div>
       </div>
     </div>
 
-    <!-- Loading state -->
     <div id="listing-loading">
       <div class="spinner"></div>
-      <span>Fetching listings from Zillow...</span>
+      <span>Fetching listings...</span>
     </div>
 
-    <!-- Error state -->
     <div id="listing-error" class="hidden">
       <div class="error-icon">⚠</div>
       <div id="error-message"></div>
-      <div class="error-hint">Check your <code>.env</code> file and restart the server.</div>
+      <div class="error-hint">Check the server console for details.</div>
     </div>
 
-    <!-- Listings -->
     <ul id="listing-list" class="hidden"></ul>
 
   </aside>
@@ -67,12 +66,15 @@
   <!-- ── MAP ──────────────────────────────────── -->
   <main id="map-container">
     <div id="map"></div>
-
-    <!-- Map overlay: last updated timestamp -->
     <div id="map-footer">
       <span id="updated-label">Fetching data...</span>
     </div>
   </main>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- Leaflet MarkerCluster JS -->
+  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 
   <script src="app.js"></script>
 </body>
