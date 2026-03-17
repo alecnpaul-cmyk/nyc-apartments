@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NYC Apartments — Last 3 Days</title>
+
+  <!-- Mapbox GL JS -->
+  <link href="https://api.mapbox.com/mapbox-gl-js/v3.1.2/mapbox-gl.css" rel="stylesheet">
+  <script src="https://api.mapbox.com/mapbox-gl-js/v3.1.2/mapbox-gl.js"></script>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ── LEFT SIDEBAR ─────────────────────────── -->
+  <aside id="sidebar">
+
+    <div id="sidebar-header">
+      <div id="header-top">
+        <div>
+          <h1>NYC Rentals</h1>
+          <p id="subtitle">New listings from the last 3 days</p>
+        </div>
+        <div id="zillow-badge">
+          <span>via</span>
+          <strong>Zillow</strong>
+        </div>
+      </div>
+
+      <div id="stats-bar">
+        <div class="stat" id="stat-count">
+          <span class="stat-value" id="count-value">—</span>
+          <span class="stat-label">listings</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-value" id="today-value">—</span>
+          <span class="stat-label">listed today</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-value" id="median-value">—</span>
+          <span class="stat-label">median price</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading state -->
+    <div id="listing-loading">
+      <div class="spinner"></div>
+      <span>Fetching listings from Zillow...</span>
+    </div>
+
+    <!-- Error state -->
+    <div id="listing-error" class="hidden">
+      <div class="error-icon">⚠</div>
+      <div id="error-message"></div>
+      <div class="error-hint">Check your <code>.env</code> file and restart the server.</div>
+    </div>
+
+    <!-- Listings -->
+    <ul id="listing-list" class="hidden"></ul>
+
+  </aside>
+
+  <!-- ── MAP ──────────────────────────────────── -->
+  <main id="map-container">
+    <div id="map"></div>
+
+    <!-- Map overlay: last updated timestamp -->
+    <div id="map-footer">
+      <span id="updated-label">Fetching data...</span>
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
