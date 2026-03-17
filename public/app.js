@@ -80,9 +80,14 @@ async function loadListings() {
 
   const count = features.length;
   const t = new Date();
-  setUpdatedLabel(
-    `Updated ${t.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} · ${count} listing${count !== 1 ? 's' : ''}`
-  );
+  if (data.usingSample) {
+    setUpdatedLabel(`Sample data · ${count} listings (Craigslist blocked cloud IPs)`);
+    document.getElementById('source-badge').title = 'Using sample data — Craigslist blocks requests from cloud servers';
+  } else {
+    setUpdatedLabel(
+      `Updated ${t.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} · ${count} listing${count !== 1 ? 's' : ''}`
+    );
+  }
 }
 
 // ════════════════════════════════════════════════

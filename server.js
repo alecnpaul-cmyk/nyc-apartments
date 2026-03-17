@@ -119,15 +119,34 @@ function jitter(coords) {
 // ─────────────────────────────────────────────────────
 async function fetchCraigslistRSS() {
   const url = 'https://newyork.craigslist.org/search/apa?format=rss';
-  const res = await fetch(url, {
-    headers: {
-      'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/124.0 Safari/537.36',
-      'Accept': 'application/rss+xml, application/xml, text/xml, */*',
-    },
-    timeout: 12000,
-  });
-  if (!res.ok) throw new Error(`Craigslist returned ${res.status}`);
-  return res.text();
+  // Try several User-Agent strings — cloud IPs are often blocked by Craigslist
+  const agents = [
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 14_4_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+    'Mozilla/5.0 (X11; Linux x86_64; rv:125.0) Gecko/20100101 Firefox/125.0',
+  ];
+  for (const ua of agents) {
+    try {
+      const res = await fetch(url, {
+        headers: {
+          'User-Agent': ua,
+          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+          'Accept-Language': 'en-US,en;q=0.9',
+          'Accept-Encoding': 'gzip, deflate, br',
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache',
+          'Upgrade-Insecure-Requests': '1',
+          'Sec-Fetch-Dest': 'document',
+          'Sec-Fetch-Mode': 'navigate',
+          'Sec-Fetch-Site': 'none',
+          'Sec-Fetch-User': '?1',
+        },
+        timeout: 12000,
+      });
+      if (res.ok) return res.text();
+    } catch (_) { /* try next agent */ }
+  }
+  throw new Error('blocked');
 }
 
 // ─────────────────────────────────────────────────────
@@ -243,15 +262,55 @@ function buildGeoJSON(items) {
 }
 
 // ─────────────────────────────────────────────────────
+// SAMPLE DATA — used when Craigslist blocks cloud IPs
+// ─────────────────────────────────────────────────────
+function sampleItems() {
+  const now = Date.now();
+  const h = (n) => new Date(now - n * 3600 * 1000).toUTCString();
+  return [
+    { title: '$2,800 / 1br - Bright renovated apt (Williamsburg)',  link: 'https://newyork.craigslist.org/brk/apa/sample-1', date: h(3),  image: null },
+    { title: '$3,500 / 2br - Sunny loft with laundry (Park Slope)', link: 'https://newyork.craigslist.org/brk/apa/sample-2', date: h(5),  image: null },
+    { title: '$2,200 / Studio - Near subway (Astoria)',             link: 'https://newyork.craigslist.org/que/apa/sample-3', date: h(8),  image: null },
+    { title: '$4,200 / 2br - Pre-war doorman building (Upper West Side)', link: 'https://newyork.craigslist.org/mnh/apa/sample-4', date: h(10), image: null },
+    { title: '$1,900 / Studio - Cozy garden unit (Ridgewood)',      link: 'https://newyork.craigslist.org/que/apa/sample-5', date: h(14), image: null },
+    { title: '$3,100 / 1br - Exposed brick, high ceilings (Bushwick)', link: 'https://newyork.craigslist.org/brk/apa/sample-6', date: h(2),  image: null },
+    { title: '$5,500 / 3br - Renovated Brownstone (Brooklyn Heights)', link: 'https://newyork.craigslist.org/brk/apa/sample-7', date: h(20), image: null },
+    { title: '$2,600 / 1br - Modern finishes (Long Island City)',   link: 'https://newyork.craigslist.org/que/apa/sample-8', date: h(26), image: null },
+    { title: '$3,800 / 2br - Steps to Central Park (Upper East Side)', link: 'https://newyork.craigslist.org/mnh/apa/sample-9', date: h(30), image: null },
+    { title: '$2,400 / 1br - Light-filled with roof deck (Greenpoint)', link: 'https://newyork.craigslist.org/brk/apa/sample-10', date: h(1), image: null },
+    { title: '$3,200 / 2br - Gut renovated (Harlem)',               link: 'https://newyork.craigslist.org/mnh/apa/sample-11', date: h(4),  image: null },
+    { title: '$2,100 / Studio - Prime location (Sunnyside)',        link: 'https://newyork.craigslist.org/que/apa/sample-12', date: h(36), image: null },
+    { title: '$4,800 / 2br - Full service building (Chelsea)',      link: 'https://newyork.craigslist.org/mnh/apa/sample-13', date: h(7),  image: null },
+    { title: '$2,950 / 1br - Hardwood floors, dishwasher (Bed-Stuy)', link: 'https://newyork.craigslist.org/brk/apa/sample-14', date: h(15), image: null },
+    { title: '$3,300 / 2br - Spacious corner unit (Jackson Heights)', link: 'https://newyork.craigslist.org/que/apa/sample-15', date: h(48), image: null },
+    { title: '$6,200 / 3br - Luxury high-rise (Midtown West)',      link: 'https://newyork.craigslist.org/mnh/apa/sample-16', date: h(11), image: null },
+    { title: '$2,700 / 1br - Steps to L train (East Williamsburg)', link: 'https://newyork.craigslist.org/brk/apa/sample-17', date: h(6),  image: null },
+    { title: '$1,750 / Studio - Great bones (Mott Haven)',          link: 'https://newyork.craigslist.org/brx/apa/sample-18', date: h(22), image: null },
+    { title: '$3,900 / 2br - Waterfront views (Battery Park City)', link: 'https://newyork.craigslist.org/mnh/apa/sample-19', date: h(9),  image: null },
+    { title: '$2,500 / 1br - Sunny top floor (Crown Heights)',      link: 'https://newyork.craigslist.org/brk/apa/sample-20', date: h(18), image: null },
+  ];
+}
+
+// ─────────────────────────────────────────────────────
 // API ENDPOINT
 // ─────────────────────────────────────────────────────
 app.get('/api/listings', async (req, res) => {
   try {
-    const xml     = await fetchCraigslistRSS();
-    const all     = parseRSS(xml);
-    const recent  = all.filter(i => isRecent(i.date));
-    const geojson = buildGeoJSON(recent);
-    console.log(`Serving ${geojson.features.length} listings (${recent.length} recent of ${all.length} total)`);
+    let items;
+    let usingSample = false;
+    try {
+      const xml = await fetchCraigslistRSS();
+      const all = parseRSS(xml);
+      items = all.filter(i => isRecent(i.date));
+      console.log(`Live Craigslist: ${items.length} recent of ${all.length} total`);
+    } catch (err) {
+      console.warn(`Craigslist unavailable (${err.message}), using sample data`);
+      items = sampleItems();
+      usingSample = true;
+    }
+    const geojson = buildGeoJSON(items);
+    geojson.usingSample = usingSample;
+    console.log(`Serving ${geojson.features.length} listings${usingSample ? ' [SAMPLE]' : ''}`);
     res.json(geojson);
   } catch (err) {
     console.error('Listings error:', err.message);
