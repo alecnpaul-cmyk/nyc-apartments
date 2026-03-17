@@ -149,7 +149,7 @@ function buildPopupHtml(p) {
       </span>
       <div class="popup-divider"></div>
       <a class="popup-link" href="${p.url}" target="_blank" rel="noopener noreferrer">
-        View on Craigslist ↗
+        ${p.url.includes('/search/') ? 'Browse on Craigslist ↗' : 'View on Craigslist ↗'}
       </a>
     </div>
   `;
